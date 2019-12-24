@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">SpGroupWeatherPOC</string>
+    <!--Splash Screen-->
+    <string name="name">SP Group</string>
+
+    <!--Home Screen-->
+    <string name="search_hint">Search City</string>
+    <string name="empty">No Result</string>
+
 </resources>
