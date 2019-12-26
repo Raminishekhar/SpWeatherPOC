@@ -14,6 +14,8 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tebs.spgroupweatherpoc.API.GetAPI
 import com.tebs.spgroupweatherpoc.Adapter.CityAdapter
+import com.tebs.spgroupweatherpoc.Database.DbWorkerThread
+import com.tebs.spgroupweatherpoc.Database.SgData
 import com.tebs.spgroupweatherpoc.Interface.OnTaskComplete
 import com.tebs.spgroupweatherpoc.Model.City
 import com.tebs.spgroupweatherpoc.R
@@ -27,17 +29,22 @@ class WeatherActivity : AppCompatActivity() , OnTaskComplete {
         try {
             val jsonObj = JSONObject(mStrResult)
             val SearchObj = jsonObj.getJSONObject("data")
-            val CurrentConditionArray = SearchObj.getJSONArray("current_condition")
+            val currentConditionArray = SearchObj.getJSONArray("current_condition")
 
-            val CurrentObj=CurrentConditionArray.getJSONObject(0);
+            val currentObj=currentConditionArray.getJSONObject(0);
+
+            insertWeatherDataInDb(city)
+
             pb.visibility=View.GONE
 
-            mTvTemp.text="Temp : "+CurrentObj.optString("temp_C")+"C"
-            mTvWeatherDesc.text="Weather Desc : "+CurrentObj.getJSONArray("weatherDesc").getJSONObject(0).optString("value")
-            DownLoadImageTask(mImgWeather)
-                .execute(CurrentObj.getJSONArray("weatherIconUrl").getJSONObject(0).optString("value"))
+            mTvTemp.text="Temp : "+currentObj.optString("temp_C")+"C"
+            mTvWeatherDesc.text="Weather Desc : "+currentObj.getJSONArray("weatherDesc").getJSONObject(0).optString("value")
+            mTvHumidity.text="Humidity : "+currentObj.optString("humidity")+"%"
 
-            mTvHumidity.text="Humidity : "+CurrentObj.optString("humidity")+"%"
+            DownLoadImageTask(mImgWeather)
+                .execute(currentObj.getJSONArray("weatherIconUrl").getJSONObject(0).optString("value"))
+
+
 
         } catch (e: Exception) {
             pb.visibility=View.GONE
@@ -50,7 +57,9 @@ class WeatherActivity : AppCompatActivity() , OnTaskComplete {
     private lateinit var mTvTemp: TextView
     private lateinit var mTvWeatherDesc: TextView
     private lateinit var mPb: ProgressBar
-
+    private lateinit var mDbWorkerThread: DbWorkerThread
+    private var mDb: SgData? = null
+    private lateinit var  city: City
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weather)
@@ -59,10 +68,14 @@ class WeatherActivity : AppCompatActivity() , OnTaskComplete {
         mTvTemp=this.tv_temp
         mImgWeather=this.img_weather
         mPb=this.pb
-        val longi=intent.getStringExtra("longi");
-        val lati=intent.getStringExtra("lati");
-        val name=intent.getStringExtra("");
-        var url = APIConstantsUrl.WeatherUrl +lati+","+longi+APIConstantsUrl.Key
+        mDb = SgData.getInstance(this)
+        mDbWorkerThread = DbWorkerThread("dbWorkerThread")
+        mDbWorkerThread.start()
+
+        city = intent.getParcelableExtra("city")
+
+
+        var url = APIConstantsUrl.WeatherUrl +city.lati+","+city.longi+APIConstantsUrl.Key
         GetAPI(this@WeatherActivity,url).execute();
         pb.visibility=View.VISIBLE
     }
@@ -84,5 +97,11 @@ class WeatherActivity : AppCompatActivity() , OnTaskComplete {
             }else{
             }
         }
+    }
+
+
+    private fun insertWeatherDataInDb(city: City) {
+        val task = Runnable { mDb?.mCityDAO()?.insertCity(city) }
+        mDbWorkerThread.postTask(task)
     }
 }

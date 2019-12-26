@@ -20,7 +20,7 @@
         android:textSize="14sp"
         android:typeface="serif" />
     <TextView
-        android:id="@+id/tv_empty_list"
+        android:id="@+id/tv_heading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"

@@ -7,12 +7,14 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.Window
 import android.view.WindowManager
+import com.tebs.spgroupweatherpoc.Database.SgData
 import com.tebs.spgroupweatherpoc.R
 
 class SplashActivity : Activity() {
 
     private var mDelayHandler: Handler? = null
     private val mSplashDelay: Long = 3000 //3 seconds
+    private var mDb: SgData? = null
 
     internal val mRunnable: Runnable = Runnable {
         if (!isFinishing) {
@@ -29,6 +31,7 @@ class SplashActivity : Activity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_splash)
+        mDb = SgData.getInstance(this)
 
         mDelayHandler = Handler()
         mDelayHandler!!.postDelayed(mRunnable, mSplashDelay)

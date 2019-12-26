@@ -21,7 +21,8 @@
         </activity>
         <activity
             android:name=".Activities.HomeActivity"
-            android:label="@string/today_weather"></activity>
+            android:label="@string/today_weather"
+            android:windowSoftInputMode="stateAlwaysHidden"></activity>
     </application>
 
 </manifest>
