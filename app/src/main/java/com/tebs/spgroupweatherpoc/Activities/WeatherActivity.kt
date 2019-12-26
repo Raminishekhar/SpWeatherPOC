@@ -37,7 +37,7 @@ class WeatherActivity : AppCompatActivity() , OnTaskComplete {
 
             pb.visibility=View.GONE
 
-            mTvTemp.text="Temp : "+currentObj.optString("temp_C")+"C"
+            mTvTemp.text="Temperature : "+currentObj.optString("temp_C")+"C"
             mTvWeatherDesc.text="Weather Desc : "+currentObj.getJSONArray("weatherDesc").getJSONObject(0).optString("value")
             mTvHumidity.text="Humidity : "+currentObj.optString("humidity")+"%"
 

@@ -68,6 +68,7 @@ class HomeActivity : AppCompatActivity(), OnTaskComplete {
                 mTvHeading.text= getString(R.string.empty)
             }
             else{
+                mTvHeading.visibility= View.VISIBLE
                 mTvHeading.text= getString(R.string.search_result)
             }
 

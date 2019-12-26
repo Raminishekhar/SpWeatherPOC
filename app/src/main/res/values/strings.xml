@@ -8,7 +8,7 @@
     <string name="empty">No Result</string>
     <string name="search_result">Search Result</string>
     <string name="history">History</string>
-    <string name="today_weather">Today Weather</string>
+    <string name="today_weather">Today\'s Weather</string>
 
 
 </resources>
