@@ -4,7 +4,11 @@
     <string name="name">SP Group</string>
 
     <!--Home Screen-->
-    <string name="search_hint">Search City</string>
+    <string name="search_hint">Please enter city / country etc...</string>
     <string name="empty">No Result</string>
+    <string name="search_result">Search Result</string>
+    <string name="history">History</string>
+    <string name="today_weather">Today Weather</string>
+
 
 </resources>

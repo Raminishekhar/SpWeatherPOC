@@ -1,11 +1,12 @@
 package com.tebs.spgroupweatherpoc.Activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tebs.spgroupweatherpoc.API.SearchAPI
+import com.tebs.spgroupweatherpoc.API.GetAPI
 import com.tebs.spgroupweatherpoc.Adapter.CityAdapter
 import com.tebs.spgroupweatherpoc.Interface.OnTaskComplete
 import com.tebs.spgroupweatherpoc.Model.City
@@ -14,13 +15,9 @@ import kotlinx.android.synthetic.main.activity_home.*
 import org.json.JSONObject
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.core.app.ComponentActivity
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import android.view.View
 import android.widget.TextView
-import com.tebs.spgroupweatherpoc.Utils.APIConstantsUrl.Companion.BaseUrl
+import com.tebs.spgroupweatherpoc.Utils.APIConstantsUrl.Companion.Key
 import com.tebs.spgroupweatherpoc.Utils.APIConstantsUrl.Companion.SearchUrl
 import java.util.*
 import kotlin.collections.ArrayList
@@ -49,7 +46,14 @@ class HomeActivity : AppCompatActivity(), OnTaskComplete {
                 areaArray.add(city)
             }
             mListCity.layoutManager = LinearLayoutManager(this)
-            mListCity.adapter = CityAdapter(areaArray, this)
+            mListCity.adapter = CityAdapter(areaArray, this,
+            {
+                val intent = Intent(this, WeatherActivity::class.java)
+                intent.putExtra("name", it.areaName)
+                intent.putExtra("longi", it.areaName)
+                intent.putExtra("lati", it.areaName)
+                startActivity(intent)                })
+
 
             if(areaArray.size==0)
             {
@@ -79,6 +83,8 @@ class HomeActivity : AppCompatActivity(), OnTaskComplete {
         mTvEmpty=this.tv_empty_list
         mListCity=this.rv_city_list
         mEtSearch.addTextChangedListener(searchTextWatcher)
+
+
     }
 
 
@@ -87,8 +93,8 @@ class HomeActivity : AppCompatActivity(), OnTaskComplete {
             timer = Timer()
             timer.schedule(object : TimerTask() {
                 override fun run() {
-                    var url =SearchUrl+mEtSearch.text+"&format=json&key=686e7daf43c54574bed65256191912"
-                    SearchAPI(this@HomeActivity,url).execute();
+                    var url =SearchUrl+mEtSearch.text+ Key
+                    GetAPI(this@HomeActivity,url).execute();
                 }
             }, 600)
         }

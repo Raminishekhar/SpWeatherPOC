@@ -8,7 +8,7 @@ import com.tebs.spgroupweatherpoc.Interface.OnTaskComplete
 import org.json.JSONObject
 import java.net.URL
 
-class SearchAPI() : AsyncTask<Unit, Unit, String>() {
+class GetAPI() : AsyncTask<Unit, Unit, String>() {
      lateinit var listener: OnTaskComplete
     lateinit var url:String
 
