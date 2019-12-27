@@ -10,6 +10,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,16 +23,19 @@ import com.tebs.spgroupweatherpoc.Model.City
 import com.tebs.spgroupweatherpoc.R
 import com.tebs.spgroupweatherpoc.Utils.APIConstantsUrl.Companion.Key
 import com.tebs.spgroupweatherpoc.Utils.APIConstantsUrl.Companion.SearchUrl
+import com.tebs.spgroupweatherpoc.Utils.AppUtil
 import kotlinx.android.synthetic.main.activity_home.*
 import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
 
 
+
+
 class HomeActivity : AppCompatActivity(), OnTaskComplete {
 
 
-    public override fun onTaskCompleted(mStrResult: String) {
+    override fun onTaskCompleted(mStrResult: String) {
         parseAndPopulate(mStrResult)
     }
 
@@ -84,6 +88,7 @@ class HomeActivity : AppCompatActivity(), OnTaskComplete {
     private lateinit var mListCity: RecyclerView
     private lateinit var timer: Timer
 
+    public lateinit var activity:HomeActivity
     private lateinit var mDbWorkerThread: DbWorkerThread
     private var mDb: SgData? = null
     private val mUiHandler = Handler()
@@ -91,6 +96,7 @@ class HomeActivity : AppCompatActivity(), OnTaskComplete {
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        activity=HomeActivity@this
         mEtSearch = this.edt_search
         mTvHeading = this.tv_heading
         mListCity = this.rv_city_list
@@ -148,8 +154,22 @@ class HomeActivity : AppCompatActivity(), OnTaskComplete {
                     if (mEtSearch.text.isEmpty()) {
                         fetchWeatherDataFromDb()
                     } else {
-                        var url = SearchUrl + mEtSearch.text + Key
-                        GetAPI(this@HomeActivity, url).execute()
+
+                        val isNetworkAvilable = AppUtil.isOnline(applicationContext)
+
+                        if (isNetworkAvilable) {
+                            var url = SearchUrl + mEtSearch.text + Key
+                            GetAPI(this@HomeActivity, url).execute()
+                        } else {
+                            activity.runOnUiThread(Runnable {
+                                Toast.makeText(
+                                    activity,
+                                    getString(R.string.no_network),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            })
+
+                        }
                     }
 
                 }

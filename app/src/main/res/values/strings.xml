@@ -9,6 +9,7 @@
     <string name="search_result">Search Result</string>
     <string name="history">History</string>
     <string name="today_weather">Today\'s Weather</string>
+    <string name="no_network">Please check Internet and try again</string>
 
 
 </resources>

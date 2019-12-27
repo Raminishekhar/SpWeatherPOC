@@ -17,6 +17,7 @@ import com.tebs.spgroupweatherpoc.Interface.OnTaskComplete
 import com.tebs.spgroupweatherpoc.Model.City
 import com.tebs.spgroupweatherpoc.R
 import com.tebs.spgroupweatherpoc.Utils.APIConstantsUrl
+import com.tebs.spgroupweatherpoc.Utils.AppUtil
 import kotlinx.android.synthetic.main.activity_weather.*
 import org.json.JSONObject
 import java.net.URL
@@ -36,7 +37,7 @@ class WeatherActivity : AppCompatActivity(), OnTaskComplete {
 
             insertWeatherDataInDb(city)
 
-            pb.visibility = View.GONE
+            mPb.visibility = View.GONE
 
             mTvTemp.text = "Temperature : " + currentObj.optString("temp_C") + "C"
             mTvWeatherDesc.text =
@@ -50,7 +51,7 @@ class WeatherActivity : AppCompatActivity(), OnTaskComplete {
 
 
         } catch (e: Exception) {
-            pb.visibility = View.GONE
+            mPb.visibility = View.GONE
             Toast.makeText(WeatherActivity@ this, "Something went wrong", Toast.LENGTH_LONG)
         }
     }
@@ -76,11 +77,17 @@ class WeatherActivity : AppCompatActivity(), OnTaskComplete {
         mDbWorkerThread.start()
 
         city = intent.getParcelableExtra("city")
+        val isNetworkAvilable = AppUtil.isOnline(applicationContext)
 
+        if (isNetworkAvilable) {
+            var url =
+                APIConstantsUrl.WeatherUrl + city.lati + "," + city.longi + APIConstantsUrl.Key
+            GetAPI(this@WeatherActivity, url).execute()
+            mPb.visibility = View.VISIBLE
+        } else {
+            Toast.makeText(applicationContext, getString(R.string.no_network), Toast.LENGTH_SHORT).show()
+        }
 
-        var url = APIConstantsUrl.WeatherUrl + city.lati + "," + city.longi + APIConstantsUrl.Key
-        GetAPI(this@WeatherActivity, url).execute()
-        pb.visibility = View.VISIBLE
     }
 
     private class DownLoadImageTask(internal val imageView: ImageView) :
