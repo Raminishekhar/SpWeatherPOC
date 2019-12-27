@@ -19,8 +19,10 @@ abstract class SgData : RoomDatabase() {
         fun getInstance(context: Context): SgData? {
             if (INSTANCE == null) {
                 synchronized(SgData::class) {
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                        SgData::class.java, "SgData.db")
+                    INSTANCE = Room.databaseBuilder(
+                        context.applicationContext,
+                        SgData::class.java, "SgData.db"
+                    )
                         .build()
                 }
             }

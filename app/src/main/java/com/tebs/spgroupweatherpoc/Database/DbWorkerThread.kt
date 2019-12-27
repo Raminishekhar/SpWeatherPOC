@@ -6,17 +6,17 @@ import android.util.Log
 
 class DbWorkerThread(threadName: String) : HandlerThread(threadName) {
 
-    private lateinit  var mWorkerHandler: Handler
+    private lateinit var mWorkerHandler: Handler
 
     override fun onLooperPrepared() {
         super.onLooperPrepared()
-        Log.e("in thread class","loop method")
+        Log.e("in thread class", "loop method")
         mWorkerHandler = Handler(looper)
     }
 
     fun postTask(task: Runnable) {
-        mWorkerHandler=Handler(this.looper)
-        Log.e("in thread class","post task method")
+        mWorkerHandler = Handler(this.looper)
+        Log.e("in thread class", "post task method")
 
         mWorkerHandler.post(task)
     }
